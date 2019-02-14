@@ -39,6 +39,37 @@ int updated = 1;
 const int MAXLINES = 100;
 const int BUFSIZE = 1024;
 
+static void blankBackground(const int imageLayer, const int displayNum){
+	// we create a 1x1 black pixel image that is added to display just behind video
+	DISPMANX_DISPLAY_HANDLE_T display;
+	DISPMANX_UPDATE_HANDLE_T update;
+	DISPMANX_RESOURCE_HANDLE_T resource;
+	uint32_t vc_image_ptr;
+	VC_IMAGE_TYPE_T type = VC_IMAGE_RGB565;
+	uint16_t image = 0x0000; // black
+	int layer = imageLayer-1;
+
+	VC_RECT_T dst_rect, src_rect;
+
+	display = vc_dispmanx_display_open(displayNum);
+
+	resource = vc_dispmanx_resource_create( type, 1 /*width*/, 1 /*height*/, &vc_image_ptr );
+
+	vc_dispmanx_rect_set( &dst_rect, 0, 0, 1, 1);
+
+	vc_dispmanx_resource_write_data( resource, type, sizeof(image), &image, &dst_rect );
+
+	vc_dispmanx_rect_set( &src_rect, 0, 0, 1<<16, 1<<16);
+	vc_dispmanx_rect_set( &dst_rect, 0, 0, 0, 0);
+
+	update = vc_dispmanx_update_start(0);
+
+	vc_dispmanx_element_add(update, display, layer, &dst_rect, resource, &src_rect,
+									DISPMANX_PROTECTION_NONE, NULL, NULL, DISPMANX_STEREOSCOPIC_MONO );
+
+	vc_dispmanx_update_submit_sync(update);
+}
+
 static int video_decode_test(char *filename)
 {
    OMX_VIDEO_PARAM_PORTFORMATTYPE format;
@@ -228,6 +259,7 @@ int main (int argc, char **argv)
       return -4;
    }
 
+   blankBackground(1, 1);
    char lines[MAXLINES][BUFSIZE];
    int index = 0;
    
