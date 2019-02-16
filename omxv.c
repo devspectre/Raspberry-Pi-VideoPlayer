@@ -230,6 +230,45 @@ static int video_decode_test(char *filename)
    return status;
 }
 
+void handle_signal(int signal) {
+	switch (signal) {
+		case SIGHUP:
+			fprintf(stderr, "Playlist updated.\n");
+			updated = 1;
+		break;
+		case SIGINT:
+			fprintf(stderr, "\nPlaying stopped by user.\n");
+			OMX_Deinit();
+
+			if (client)
+				ilclient_destroy(client);
+			exit(0);
+		break;
+	}
+}
+void trimTrailing(char * str)
+{
+    int index, i;
+
+    /* Set default index */
+    index = -1;
+
+    /* Find last index of non-white space character */
+    i = 0;
+    while(str[i] != '\0')
+    {
+        if(str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
+        {
+            index= i;
+        }
+
+        i++;
+    }
+
+    /* Mark next character to last non-white space character as NULL */
+    str[index + 1] = '\0';
+}
+
 
 
 int main (int argc, char **argv)
@@ -258,13 +297,14 @@ int main (int argc, char **argv)
       ilclient_destroy(client);
       return -4;
    }
-
    blankBackground(1, 1);
    char lines[MAXLINES][BUFSIZE];
    int index = 0;
    
    for (;;) {
 	if (updated == 1) {
+		fprintf(stderr, "==================================================\n");
+		fprintf(stderr, "Updating playlist.\n");
 		memset(lines, 0x0, MAXLINES * BUFSIZE);
 		index = 0;
 		FILE *file;
@@ -285,11 +325,17 @@ int main (int argc, char **argv)
 		}
 		fclose(file);
 		updated = -1;
+		fprintf(stderr, "Playlist updated successfully.\n");
+		fprintf(stderr, "==================================================\n");
 	}
 
 	
 	for (int i = 0; i< index; i++)
-	{	
+	{
+		if (updated == 1) {
+			fprintf(stderr, "Canceling current playlist and turning into new playlist.\n");
+			break;
+		}		
 		fprintf(stderr, "%s\n", lines[i]);
 		trimTrailing(lines[i]);
 		int ret = video_decode_test(lines[i]);
@@ -302,7 +348,8 @@ int main (int argc, char **argv)
 			case 0:
 			break;
 		}
-	}	
+	}
+	fprintf(stderr, "--------------------------------------------------\n");	
    }
    
 }
