@@ -2,9 +2,13 @@
 
 ## Summary
 Adopted OpenMAX IL
+
 All dependecies are included within the package.
+
 This app is intended to run on Rapberry PI with a screen attached.
+
 User can update playlist without interrupting current play.
+
 Tested on Debian systems - Ubuntu 12.04, Ubuntu 14.04, Ubuntu 16.04
 
 ## Build & Installation
