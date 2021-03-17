@@ -37,6 +37,7 @@ kill -SIGHUP `pidof omxv`
 
 ## Playlist
 Playlist filename is `playlist.txt` by default unless it is specified in command line.
+
 But when you are not specifying filename, file must be in current directory and the name must be playlist.txt.
 
 	File Format:
