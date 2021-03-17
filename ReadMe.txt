@@ -1,32 +1,39 @@
+# Raspberry PI Video Player for Digital Signature
+
+## Summary
 Adopted OpenMAX IL
 All dependecies are included within the package.
-You just need to run these commands below to test or use it.
+This app is intended to run on Rapberry PI with a screen attached.
+User can update playlist without interrupting current play.
+Tested on Debian systems - Ubuntu 12.04, Ubuntu 14.04, Ubuntu 16.04
 
-Build:
-	make
+## Build & Installation
 
-	Usage:
-		./omxv.bin <absolute path to playlist file>
-		./omxv.bin (Assuming that playlist.txt exists in same directory)
-Deploy:
-	sudo make install
+```bash
+make
+sudo make install
+```
+## Usage
+### _Play_
+1. omxv <absolute path to playlist file>
+2. omxv (Assuming that playlist.txt exists in current directory)
 
-	Usage:
-		omxv <absolute path to playlist file>
-		omxv (Assuming that playlist.txt exists in current directory)
+### _Stop_
+Press `Ctrl + C` to stop the player.
 
-Stop:
-	Ctrl + C
+### _Update playlist_
+Change the playlist.txt file with new one and run the following command to update current playlist.
+```bash
+kill -1 `pidof omxv`
+```
+or
+```bash
+kill -SIGHUP `pidof omxv`
+```
 
-Update playlist:(How to let omxv know playlist is updated)
-
-	kill -1 `pidof omxv`
-	or
-	kill -SIGHUP `pidof omxv`
-
-Playlist:
-	Filename is regardless when you specify file in command line.
-	But when you are not specifying filename, file must be in current directory and the name must be playlist.txt
+## Playlist
+Playlist filename is `playlist.txt` by default unless it is specified in command line.
+But when you are not specifying filename, file must be in current directory and the name must be playlist.txt.
 
 	File Format:
 		- Multiple lines
@@ -60,4 +67,6 @@ Playlist:
 			/home/pi/presenter/media/msap-ad-14.h264
 			/home/pi/presenter/media/msap-ad-shop.h264
 			(new line at the end of list)
-		
+
+## License
+[GPLv3](http://www.gnu.org/licenses/gpl-3.0.en.html)

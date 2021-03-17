@@ -302,54 +302,53 @@ int main (int argc, char **argv)
    int index = 0;
    
    for (;;) {
-	if (updated == 1) {
-		fprintf(stderr, "==================================================\n");
-		fprintf(stderr, "Updating playlist.\n");
-		memset(lines, 0x0, MAXLINES * BUFSIZE);
-		index = 0;
-		FILE *file;
-	
-		file = fopen(default_file_exist == 1 ? "playlist.txt" : argv[1], "r");
-		
-		if (file == NULL) {
-			fprintf(stderr, "Cannot open the playlist file!\n");
-		    	return 1;
-		}	    
-		
-		
-		while (index < MAXLINES && fgets(lines[index], 1024, file)) {
-		    	lines[index][strlen(lines[index]) - 1] = '\0';
-			
-			index = index + 1;
-	
-		}
-		fclose(file);
-		updated = -1;
-		fprintf(stderr, "Playlist updated successfully.\n");
-		fprintf(stderr, "==================================================\n");
-	}
+      if (updated == 1) {
+         fprintf(stderr, "==================================================\n");
+         fprintf(stderr, "Updating playlist.\n");
+         memset(lines, 0x0, MAXLINES * BUFSIZE);
+         index = 0;
+         FILE *file;
+      
+         file = fopen(default_file_exist == 1 ? "playlist.txt" : argv[1], "r");
+         
+         if (file == NULL) {
+            fprintf(stderr, "Cannot open the playlist file!\n");
+               return 1;
+         }	    
+         
+         
+         while (index < MAXLINES && fgets(lines[index], 1024, file)) {
+               lines[index][strlen(lines[index]) - 1] = '\0';
+            
+            index = index + 1;
+      
+         }
+         fclose(file);
+         updated = -1;
+         fprintf(stderr, "Playlist updated successfully.\n");
+         fprintf(stderr, "==================================================\n");
+      }
 
-	
-	for (int i = 0; i< index; i++)
-	{
-		if (updated == 1) {
-			fprintf(stderr, "Canceling current playlist and turning into new playlist.\n");
-			break;
-		}		
-		fprintf(stderr, "%s\n", lines[i]);
-		trimTrailing(lines[i]);
-		int ret = video_decode_test(lines[i]);
-		switch(ret) {
-			case -2:
-			fprintf(stderr, "Cannot open file! It might not exist.\n");
-			break;
-			case -1:
-			break;
-			case 0:
-			break;
-		}
-	}
-	fprintf(stderr, "--------------------------------------------------\n");	
+      
+      for (int i = 0; i< index; i++)
+      {
+         if (updated == 1) {
+            fprintf(stderr, "Canceling current playlist and turning into new playlist.\n");
+            break;
+         }		
+         fprintf(stderr, "%s\n", lines[i]);
+         trimTrailing(lines[i]);
+         int ret = video_decode_test(lines[i]);
+         switch(ret) {
+            case -2:
+            fprintf(stderr, "Cannot open file! It might not exist.\n");
+            break;
+            case -1:
+            break;
+            case 0:
+            break;
+         }
+      }
    }
    
 }
